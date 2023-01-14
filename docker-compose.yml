@@ -9,7 +9,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=America/Sao_Paulo
+      - TZ=${TZ}
     volumes:
       - /docker/nextcloud/appdata:/config
       - /docker/nextcloud/data:/data
@@ -25,7 +25,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=America/Sao_Paulo
+      - TZ=${TZ}
     volumes:
       - /docker/nextcloud/homeassistant:/config
     ports:
@@ -76,7 +76,7 @@ services:
       - PUID=1000
       - PGID=1000
       - KASM_PORT=443
-      - TZ=America/Sao_Paulo
+      - TZ=${TZ}
     volumes:
       - /docker/kasm/data:/opt
       - /docker/kasm/profiles:/profiles
@@ -92,7 +92,7 @@ services:
     ports:
       - 61208:61208/tcp
     environment:
-      - TZ=America/Sao_Paulo
+      - TZ=${TZ}
       - GLANCES_OPT=--webserver
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
