@@ -1,0 +1,100 @@
+version: "3"
+    
+services:
+  nextcloud:
+    image: lscr.io/linuxserver/nextcloud
+    container_name: nextcloud
+    network_mode: bridge
+    hostname: nextcloud
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Sao_Paulo
+    volumes:
+      - /docker/nextcloud/appdata:/config
+      - /docker/nextcloud/data:/data
+    ports:
+      - 10443:443
+    restart: unless-stopped
+
+  homeassistant:
+    image: homeassistant/home-assistant:latest
+    container_name: home-assistant
+    network_mode: bridge
+    hostname: homeassistant
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Sao_Paulo
+    volumes:
+      - /docker/nextcloud/homeassistant:/config
+    ports:
+      - 8123:8123
+    restart: unless-stopped
+    
+  uptimekuma:
+    image: louislam/uptime-kuma:latest
+    container_name: uptimekuma
+    network_mode: bridge
+    hostname: uptimekuma
+    volumes:
+      - /docker/uptimekuma/data:/app/data
+    ports:
+      - 3001:3001
+    restart: unless-stopped
+   
+  heindall:
+    image: lscr.io/linuxserver/heimdall:latest
+    container_name: heindall
+    network_mode: bridge
+    hostname: heindall
+    volumes:
+      - /docker/heimdall/config:/config
+    ports:
+      - 8086:80
+      - 8443:443
+    restart: unless-stopped
+    
+  guacamole:
+    image: oznu/guacamole:latest
+    container_name: guacamole
+    network_mode: bridge
+    hostname: guacamole
+    volumes:
+      - /docker/guacamole:/config
+    ports:
+      - 8087:8080
+    restart: unless-stopped
+    
+  kasm:
+    image: lscr.io/linuxserver/kasm:latest
+    container_name: kasm
+    network_mode: bridge
+    hostname: sandbox
+    privileged: true
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - KASM_PORT=443
+      - TZ=America/Sao_Paulo
+    volumes:
+      - /docker/kasm/data:/opt
+      - /docker/kasm/profiles:/profiles
+    ports:
+      - 3002:3000/tcp #setup wizard only
+      - 11443:443/tcp
+    restart: unless-stopped
+    
+  glances:
+    image: joweisberg/glances:latest
+    container_name: glances
+    pid: host
+    ports:
+      - 61208:61208/tcp
+    environment:
+      - TZ=America/Sao_Paulo
+      - GLANCES_OPT=--webserver
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /docker/glances:/glances/conf
+    restart: unless-stopped
